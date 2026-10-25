@@ -25,7 +25,7 @@ struct ContentView: View {
                     AddTip()
                 }
                 Section {
-                    Calculate()
+                    Total()
                 }
             }
 //            .listStyle(GroupedListStyle())
@@ -53,7 +53,7 @@ struct ListItem: View {
             Text(itemName)
             Spacer()
             Text(itemPrice, format: .currency(code: "USD"))
-//            Stepper("\(quantity)", value: $quantity)
+            Stepper("\(quantity)", value: $quantity)
         }
         .padding()
     }
@@ -105,19 +105,21 @@ struct AddTip: View {
     }
 }
 
-//struct Calculate: View {
-//    @State var total : Double = 0
-//    
-//    
-//    var body: some View {
-//        HStack {
-//            Text("Total")
-//            
-//        }
-//        
-//    }
-//}
 
+struct Total: View {
+    var total : Double = 0
+    
+    var body: some View {
+        HStack {
+            Text("Total")
+        }
+    }
+}
+
+
+func calculator(quantity: Int, price: Double) -> Double{
+    return Double(quantity) * price
+}
 
 // ----------------------------- PREVIEW OPTIONS -----------------------------
 #Preview {
