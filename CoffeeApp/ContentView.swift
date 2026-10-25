@@ -21,6 +21,12 @@ struct ContentView: View {
                 Section {
                     AddOption()
                 }
+                Section {
+                    AddTip()
+                }
+                Section {
+                    Calculate()
+                }
             }
 //            .listStyle(GroupedListStyle())
             .navigationTitle(Text("Barista"))
@@ -35,9 +41,11 @@ struct ContentView: View {
 
 struct ListItem: View {
     
+//    Use Stepper here for quantity
     var iconName : String
     var itemName : String
     var itemPrice : Double
+    @State var quantity : Int = 0
         
     var body: some View {
         HStack {
@@ -45,6 +53,7 @@ struct ListItem: View {
             Text(itemName)
             Spacer()
             Text(itemPrice, format: .currency(code: "USD"))
+//            Stepper("\(quantity)", value: $quantity)
         }
         .padding()
     }
@@ -75,10 +84,38 @@ struct AddOption: View {
 
 
 
-//struct AddTip: View {
-//    @State var flag : Bool = false
-//    @State var tip : Int = 0
-//    var tips : [Int] = [10, 15, 18, 20]
+struct AddTip: View {
+    @State var flag : Bool = false
+    @State var tip : Int = 0
+    var tips : [Int] = [10, 15, 18, 20]
+    
+    var body : some View {
+        VStack {
+            Toggle("Add a tip", isOn: $flag.animation())
+            if flag {
+                Picker("Tip amount", selection: $tip) {
+                    ForEach(tips, id: \.self) { option in
+                        Text("%\(option)")
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+            }
+        }
+    }
+}
+
+//struct Calculate: View {
+//    @State var total : Double = 0
+//    
+//    
+//    var body: some View {
+//        HStack {
+//            Text("Total")
+//            
+//        }
+//        
+//    }
 //}
 
 
