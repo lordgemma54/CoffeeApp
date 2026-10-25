@@ -22,7 +22,9 @@ struct ContentView: View {
                     AddOption()
                 }
             }
-            
+//            .listStyle(GroupedListStyle())
+            .navigationTitle(Text("Barista"))
+            .navigationBarTitleDisplayMode(.inline)
         }
         
 
@@ -51,7 +53,6 @@ struct ListItem: View {
 
 
 struct AddOption: View {
-    
     @State var flag : Bool = false
     @State var option : String = "Mocha"
     var options : [String] = ["Mocha", "Vanilla", "Caramel"]
@@ -71,6 +72,14 @@ struct AddOption: View {
         }
     }
 }
+
+
+
+//struct AddTip: View {
+//    @State var flag : Bool = false
+//    @State var tip : Int = 0
+//    var tips : [Int] = [10, 15, 18, 20]
+//}
 
 
 // ----------------------------- PREVIEW OPTIONS -----------------------------
