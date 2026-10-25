@@ -9,16 +9,31 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        ListItem(iconName: "Coffee", itemName: "Cappuccino", itemPrice: 4.5)
+        ListItem(iconName: "Coffee", itemName: "Cappuccino", itemPrice: 4.5)
+        ListItem(iconName: "Coffee", itemName: "Cappuccino", itemPrice: 4.5)
+        ListItem(iconName: "Coffee", itemName: "Cappuccino", itemPrice: 4.5)
+
     }
 }
 
 #Preview {
     ContentView()
+}
+
+struct ListItem: View {
+    
+    var iconName : String
+    var itemName : String
+    var itemPrice : Double
+    
+    var body: some View {
+        HStack {
+            Image(iconName)
+            Text(itemName)
+            Spacer()
+            Text("$\(itemPrice)")
+        }
+        .padding()
+    }
 }
