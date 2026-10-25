@@ -19,7 +19,7 @@ struct ContentView: View {
                     ListItem(iconName: "FlatWhite", itemName: "Flat White", itemPrice: 6)
                 }
                 Section {
-                    
+                    AddOption()
                 }
             }
             
@@ -28,6 +28,8 @@ struct ContentView: View {
 
     }
 }
+
+
 
 struct ListItem: View {
     
@@ -46,8 +48,28 @@ struct ListItem: View {
     }
 }
 
-struct AddFlavor {
+
+
+struct AddOption: View {
     
+    @State var flag : Bool = false
+    @State var option : String = "Mocha"
+    var options : [String] = ["Mocha", "Vanilla", "Caramel"]
+    
+    var body : some View {
+        VStack {
+            Toggle("Add a flavor", isOn: $flag.animation())
+            if flag {
+                Picker("Flavor options", selection: $option) {
+                    ForEach(options, id: \.self) { option in
+                        Text("\(option)")
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+            }
+        }
+    }
 }
 
 
