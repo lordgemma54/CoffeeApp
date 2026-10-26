@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    
     @State var coffeeMenu: [CoffeeItem] = [
         CoffeeItem(iconName: "Cappuccino", itemName: "Cappuccino", itemPrice: 5.0, quantity: 0),
         CoffeeItem(iconName: "Latte", itemName: "Latte", itemPrice: 4.5, quantity: 0),
@@ -37,8 +36,6 @@ struct ContentView: View {
             .navigationTitle(Text("Barista!"))
             .navigationBarTitleDisplayMode(.inline)
         }
-        
-
     }
 }
 
@@ -48,17 +45,12 @@ struct CoffeeItem {
     var itemName : String
     var itemPrice : Double
     var quantity : Int
+    
 //    var flavor : String
 }
 
 
 struct ListItem: View {
-    
-//    Use Stepper here for quantity
-//    var iconName : String
-//    var itemName : String
-//    var itemPrice : Double
-    
     @Binding var item: CoffeeItem
         
     var body: some View {
@@ -66,8 +58,14 @@ struct ListItem: View {
             Image(item.iconName)
             Text(item.itemName)
             Spacer()
-            Text(item.itemPrice, format: .currency(code: "USD"))
-            Stepper("\(item.quantity)", value: $item.quantity)
+            Text(item.itemPrice, format: .currency(code: "USD")).padding(.trailing, 8)
+            
+            HStack(spacing: 8) {
+                
+                Stepper("", value: $item.quantity, in: 0...99).labelsHidden().fixedSize()
+                Text("\(item.quantity)").frame(minWidth: 20, alignment: .leading)
+            }
+            
         }
         .padding()
     }
@@ -121,7 +119,6 @@ struct AddOption: View {
 
 
 struct Total: View {
-    
     @Binding var items: [CoffeeItem]
     
 //   Computed property for keeping track of the total
@@ -155,6 +152,7 @@ struct ConfirmOrder: View {
         })
     }
 }
+
 
 struct SecondView: View {
     @Binding var present : Bool
