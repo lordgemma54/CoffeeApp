@@ -8,28 +8,33 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State var coffeeMenu: [CoffeeItem] = [
+        CoffeeItem(iconName: "Cappuccino", itemName: "Cappuccino", itemPrice: 5.0, quantity: 0),
+        CoffeeItem(iconName: "Latte", itemName: "Latte", itemPrice: 4.5, quantity: 0),
+        CoffeeItem(iconName: "Iced", itemName: "Iced Coffee", itemPrice: 3.75, quantity: 0),
+        CoffeeItem(iconName: "FlatWhite", itemName: "Flat White", itemPrice: 6.0, quantity: 0)
+    ]
+    
     var body: some View {
-        
         NavigationStack {
             List {
-                Group {
-                    ListItem(iconName: "Cappuccino", itemName: "Cappuccino", itemPrice: 5)
-                    ListItem(iconName: "Latte", itemName: "Latte", itemPrice: 4.5)
-                    ListItem(iconName: "Iced", itemName: "Iced Coffee", itemPrice: 3.75)
-                    ListItem(iconName: "FlatWhite", itemName: "Flat White", itemPrice: 6)
+                ForEach(0..<coffeeMenu.count, id: \.self) { index in
+                    ListItem(item: $coffeeMenu[index])
                 }
+                
                 Section {
                     AddOption()
                 }
                 Section {
-                    AddTip()
+                    Total(items: $coffeeMenu)
                 }
                 Section {
-                    Total()
+                    ConfirmOrder()
                 }
             }
-//            .listStyle(GroupedListStyle())
-            .navigationTitle(Text("Barista"))
+            .listStyle(GroupedListStyle())
+            .navigationTitle(Text("Barista!"))
             .navigationBarTitleDisplayMode(.inline)
         }
         
@@ -38,22 +43,31 @@ struct ContentView: View {
 }
 
 
+struct CoffeeItem {
+    var iconName : String
+    var itemName : String
+    var itemPrice : Double
+    var quantity : Int
+//    var flavor : String
+}
+
 
 struct ListItem: View {
     
 //    Use Stepper here for quantity
-    var iconName : String
-    var itemName : String
-    var itemPrice : Double
-    @State var quantity : Int = 0
+//    var iconName : String
+//    var itemName : String
+//    var itemPrice : Double
+    
+    @Binding var item: CoffeeItem
         
     var body: some View {
         HStack {
-            Image(iconName)
-            Text(itemName)
+            Image(item.iconName)
+            Text(item.itemName)
             Spacer()
-            Text(itemPrice, format: .currency(code: "USD"))
-            Stepper("\(quantity)", value: $quantity)
+            Text(item.itemPrice, format: .currency(code: "USD"))
+            Stepper("\(item.quantity)", value: $item.quantity)
         }
         .padding()
     }
@@ -84,41 +98,75 @@ struct AddOption: View {
 
 
 
-struct AddTip: View {
-    @State var flag : Bool = false
-    @State var tip : Int = 0
-    var tips : [Int] = [10, 15, 18, 20]
-    
-    var body : some View {
-        VStack {
-            Toggle("Add a tip", isOn: $flag.animation())
-            if flag {
-                Picker("Tip amount", selection: $tip) {
-                    ForEach(tips, id: \.self) { option in
-                        Text("%\(option)")
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-            }
-        }
-    }
-}
+//struct AddTip: View {
+//    @State var flag : Bool = false
+//    @State var tip : Int = 0
+//    var tips : [Int] = [10, 15, 18, 20]
+//    
+//    var body : some View {
+//        VStack {
+//            Toggle("Add a tip", isOn: $flag.animation())
+//            if flag {
+//                Picker("Tip amount", selection: $tip) {
+//                    ForEach(tips, id: \.self) { option in
+//                        Text("%\(option)")
+//                    }
+//                }
+//                .pickerStyle(SegmentedPickerStyle())
+//                .padding()
+//            }
+//        }
+//    }
+//}
 
 
 struct Total: View {
-    var total : Double = 0
+    
+    @Binding var items: [CoffeeItem]
+    
+//   Computed property for keeping track of the total
+    var grandTotal : Double {
+        var currentTotal: Double = 0.0
+        for item in items {
+            currentTotal += Double(item.quantity) * item.itemPrice
+        }
+        return currentTotal
+    }
     
     var body: some View {
         HStack {
             Text("Total")
+            Spacer()
+            Text(grandTotal, format: .currency(code: "USD")).bold()
         }
     }
 }
 
 
-func calculator(quantity: Int, price: Double) -> Double{
-    return Double(quantity) * price
+struct ConfirmOrder: View {
+    @State var present : Bool = false
+    
+    var body : some View {
+        Button("Confirm Order") {
+            present.toggle()
+        }
+        .sheet(isPresented: $present, content: {
+            SecondView(present: $present)
+        })
+    }
+}
+
+struct SecondView: View {
+    @Binding var present : Bool
+    
+    var body : some View {
+        VStack {
+            Text("Order Submitted")
+            Button("Return") {
+                present.toggle()
+            }
+        }
+    }
 }
 
 // ----------------------------- PREVIEW OPTIONS -----------------------------
