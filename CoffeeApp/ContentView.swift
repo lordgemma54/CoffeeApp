@@ -21,17 +21,12 @@ struct ContentView: View {
                 ForEach(0..<coffeeMenu.count, id: \.self) { index in
                     ListItem(item: $coffeeMenu[index])
                 }
-                
-                Section {
-                    AddOption()
-                }
+                AddOption()
                 Section {
                     Total(items: $coffeeMenu)
                     ConfirmOrder()
-
                 }
-                Section {
-                }
+                
             }
             .listStyle(GroupedListStyle())
             .navigationTitle(Text("Barista!"))
@@ -59,12 +54,11 @@ struct ListItem: View {
             Image(item.iconName)
             Text(item.itemName)
             Spacer()
-            Text(item.itemPrice, format: .currency(code: "USD")).padding(.trailing, 8)
+            Text(item.itemPrice, format: .currency(code: "USD")).padding(.trailing, 2)
             
-            HStack(spacing: 8) {
-                
+            HStack(spacing: 3) {
                 Stepper("", value: $item.quantity, in: 0...99).labelsHidden().fixedSize()
-                Text("\(item.quantity)").frame(minWidth: 16, alignment: .leading)
+                Text("\(item.quantity)").frame(minWidth: 18, alignment: .leading)
             }
             
         }
@@ -96,28 +90,6 @@ struct AddOption: View {
     }
 }
 
-
-
-//struct AddTip: View {
-//    @State var flag : Bool = false
-//    @State var tip : Int = 0
-//    var tips : [Int] = [10, 15, 18, 20]
-//    
-//    var body : some View {
-//        VStack {
-//            Toggle("Add a tip", isOn: $flag.animation())
-//            if flag {
-//                Picker("Tip amount", selection: $tip) {
-//                    ForEach(tips, id: \.self) { option in
-//                        Text("%\(option)")
-//                    }
-//                }
-//                .pickerStyle(SegmentedPickerStyle())
-//                .padding()
-//            }
-//        }
-//    }
-//}
 
 
 struct Total: View {
@@ -153,9 +125,6 @@ struct ConfirmOrder: View {
                 Text("Confirm Order").bold()
                     .frame(maxWidth: .infinity)
             }
-//            Button("Confirm Order") {
-//                present.toggle()
-//            }
             .sheet(isPresented: $present, content: {
                 SecondView(present: $present)
             })
@@ -177,6 +146,7 @@ struct SecondView: View {
         }
     }
 }
+
 
 // ----------------------------- PREVIEW OPTIONS -----------------------------
 #Preview {
