@@ -48,8 +48,6 @@ struct CoffeeItem {
     var itemName : String
     var itemPrice : Double
     var quantity : Int
-    
-//    var flavor : String
 }
 
 
@@ -57,19 +55,21 @@ struct ListItem: View {
     @Binding var item: CoffeeItem
         
     var body: some View {
-        HStack {
-            Image(item.iconName)
-            Text(item.itemName)
-            Spacer()
-            Text(item.itemPrice, format: .currency(code: "USD")).padding(.trailing, 2)
-            
-            HStack(spacing: 3) {
-                Stepper("", value: $item.quantity, in: 0...99).labelsHidden().fixedSize()
-                Text("\(item.quantity)").frame(minWidth: 18, alignment: .leading)
+        VStack {
+            HStack {
+                Image(item.iconName)
+                Text(item.itemName)
+                Spacer()
+                Text(item.itemPrice, format: .currency(code: "USD")).padding(.trailing, 2)
+                
+                HStack(spacing: 3) {
+                    Stepper("", value: $item.quantity, in: 0...99).labelsHidden().fixedSize()
+                    Text("\(item.quantity)").frame(minWidth: 18, alignment: .leading)
+                }
+                
             }
-            
+            .padding()
         }
-        .padding()
     }
 }
 
@@ -144,16 +144,11 @@ struct ConfirmOrder: View {
             }
                 
             }
-//                label: {
-//                Text("Confirm Order").bold()
-//                    .frame(maxWidth: .infinity)
-                
+
             }
-//            )
+
         }
-        
-//    }
-//}
+
 
 
 struct SecondView: View {
@@ -164,14 +159,14 @@ struct SecondView: View {
     @Binding var chosenFlavor : String
     
     var body : some View {
-//        VStack {
-//            Text("Order Submitted").bold()
-            
             VStack {
                 Text("Your Order").bold()
                 
                 ForEach(items, id: \.itemName) {item in
                     if item.quantity > 0 {
+                        Text("Item: \(item.itemName)")
+                            .italic()
+                            .foregroundColor(.secondary)
                         Text("Added Flavor: \(chosenFlavor)")
                             .italic()
                             .foregroundColor(.secondary)
@@ -186,7 +181,6 @@ struct SecondView: View {
                     present.toggle()
                 }
             }
-//        }
     }
 }
 
