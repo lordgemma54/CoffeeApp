@@ -27,9 +27,10 @@ struct ContentView: View {
                 }
                 Section {
                     Total(items: $coffeeMenu)
+                    ConfirmOrder()
+
                 }
                 Section {
-                    ConfirmOrder()
                 }
             }
             .listStyle(GroupedListStyle())
@@ -63,7 +64,7 @@ struct ListItem: View {
             HStack(spacing: 8) {
                 
                 Stepper("", value: $item.quantity, in: 0...99).labelsHidden().fixedSize()
-                Text("\(item.quantity)").frame(minWidth: 20, alignment: .leading)
+                Text("\(item.quantity)").frame(minWidth: 16, alignment: .leading)
             }
             
         }
@@ -76,6 +77,7 @@ struct ListItem: View {
 struct AddOption: View {
     @State var flag : Bool = false
     @State var option : String = "Mocha"
+    
     var options : [String] = ["Mocha", "Vanilla", "Caramel"]
     
     var body : some View {
@@ -144,12 +146,21 @@ struct ConfirmOrder: View {
     @State var present : Bool = false
     
     var body : some View {
-        Button("Confirm Order") {
-            present.toggle()
+        VStack {
+            Button {
+                present.toggle()
+            } label: {
+                Text("Confirm Order").bold()
+                    .frame(maxWidth: .infinity)
+            }
+//            Button("Confirm Order") {
+//                present.toggle()
+//            }
+            .sheet(isPresented: $present, content: {
+                SecondView(present: $present)
+            })
         }
-        .sheet(isPresented: $present, content: {
-            SecondView(present: $present)
-        })
+        
     }
 }
 
