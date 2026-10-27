@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+//    @State var flag : Bool = false
+//    @State var option : String = "Mocha"
+    
+    @State var wantsFlavor : Bool = false
+    @State var chosenFlavor : String = "Mocha"
+
+
     @State var coffeeMenu: [CoffeeItem] = [
         CoffeeItem(iconName: "Cappuccino", itemName: "Cappuccino", itemPrice: 5.0, quantity: 0),
         CoffeeItem(iconName: "Latte", itemName: "Latte", itemPrice: 4.5, quantity: 0),
@@ -21,10 +28,10 @@ struct ContentView: View {
                 ForEach(0..<coffeeMenu.count, id: \.self) { index in
                     ListItem(item: $coffeeMenu[index])
                 }
-                AddOption()
+                AddOption(flag: $wantsFlavor, option: $chosenFlavor)
                 Section {
                     Total(items: $coffeeMenu)
-                    ConfirmOrder()
+                    ConfirmOrder(items: $coffeeMenu, addFlavor: $wantsFlavor, chosenFlavor: $chosenFlavor)
                 }
                 
             }
@@ -69,8 +76,8 @@ struct ListItem: View {
 
 
 struct AddOption: View {
-    @State var flag : Bool = false
-    @State var option : String = "Mocha"
+    @Binding var flag : Bool
+    @Binding var option : String
     
     var options : [String] = ["Mocha", "Vanilla", "Caramel"]
     
@@ -117,33 +124,69 @@ struct Total: View {
 struct ConfirmOrder: View {
     @State var present : Bool = false
     
+    @Binding var items : [CoffeeItem]
+    @Binding var addFlavor : Bool
+    @Binding var chosenFlavor : String
+    
     var body : some View {
         VStack {
-            Button {
+            Button("Confirm Order") {
                 present.toggle()
-            } label: {
-                Text("Confirm Order").bold()
-                    .frame(maxWidth: .infinity)
             }
-            .sheet(isPresented: $present, content: {
-                SecondView(present: $present)
-            })
+            .bold()
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .sheet(isPresented: $present) {
+                SecondView(present: $present, items: $items, addFlavor: $addFlavor, chosenFlavor: $chosenFlavor)
+            }
+                
+            }
+//                label: {
+//                Text("Confirm Order").bold()
+//                    .frame(maxWidth: .infinity)
+                
+            }
+//            )
         }
         
-    }
-}
+//    }
+//}
 
 
 struct SecondView: View {
     @Binding var present : Bool
     
+    @Binding var items : [CoffeeItem]
+    @Binding var addFlavor : Bool
+    @Binding var chosenFlavor : String
+    
     var body : some View {
-        VStack {
-            Text("Order Submitted")
-            Button("Return") {
-                present.toggle()
+//        VStack {
+//            Text("Order Submitted").bold()
+            
+            VStack {
+                Text("Your Order").bold()
+                
+                ForEach(items, id: \.itemName) {item in
+                    if item.quantity > 0 {
+                        Text("Added Flavor: \(chosenFlavor)")
+                            .italic()
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                
+                Button("Return") {
+                    present.toggle()
+                }
             }
-        }
+//        }
     }
 }
 
