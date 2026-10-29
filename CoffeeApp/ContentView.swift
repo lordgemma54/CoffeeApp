@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-//    @State var flag : Bool = false
-//    @State var option : String = "Mocha"
-    
-    @State var wantsFlavor : Bool = false
-    @State var chosenFlavor : String = "Mocha"
 
+    
+    @State var addedTip : Bool = false
+    @State var option : Int = 10
+    @State var gradTotal : Double = 0
 
     @State var coffeeMenu: [CoffeeItem] = [
         CoffeeItem(iconName: "Cappuccino", itemName: "Cappuccino", itemPrice: 5.0, quantity: 0),
@@ -22,16 +21,28 @@ struct ContentView: View {
         CoffeeItem(iconName: "FlatWhite", itemName: "Flat White", itemPrice: 6.0, quantity: 0)
     ]
     
+    var grandTotal : Double {
+        var currentTotal: Double = 0.0
+        for item in coffeeMenu{
+            currentTotal += Double(item.quantity) * item.itemPrice
+        }
+        if addedTip {
+            currentTotal += currentTotal * (Double(option) / 100)
+        }
+        return currentTotal
+    }
+    
     var body: some View {
         NavigationStack {
             List {
                 ForEach(0..<coffeeMenu.count, id: \.self) { index in
                     ListItem(item: $coffeeMenu[index])
                 }
-                AddOption(flag: $wantsFlavor, option: $chosenFlavor)
+                AddTip(addedTip: $addedTip, option: $option)
+                
                 Section {
-                    Total(items: $coffeeMenu)
-                    ConfirmOrder(items: $coffeeMenu, addFlavor: $wantsFlavor, chosenFlavor: $chosenFlavor)
+                    Total(grandTotal: grandTotal)
+                    ConfirmOrder(items: $coffeeMenu, addedTip: $addedTip, option: $option, grandTotal: grandTotal)
                 }
                 
             }
@@ -74,18 +85,17 @@ struct ListItem: View {
 }
 
 
-
-struct AddOption: View {
-    @Binding var flag : Bool
-    @Binding var option : String
+struct AddTip: View {
+    @Binding var addedTip : Bool
+    @Binding var option : Int
     
-    var options : [String] = ["Mocha", "Vanilla", "Caramel"]
+    var options : [Int] = [10, 15, 18, 20]
     
     var body : some View {
         VStack {
-            Toggle("Add a flavor", isOn: $flag.animation())
-            if flag {
-                Picker("Flavor options", selection: $option) {
+            Toggle("Add a Tip", isOn: $addedTip.animation())
+            if addedTip {
+                Picker("%", selection: $option) {
                     ForEach(options, id: \.self) { option in
                         Text("\(option)")
                     }
@@ -100,16 +110,7 @@ struct AddOption: View {
 
 
 struct Total: View {
-    @Binding var items: [CoffeeItem]
-    
-//   Computed property for keeping track of the total
-    var grandTotal : Double {
-        var currentTotal: Double = 0.0
-        for item in items {
-            currentTotal += Double(item.quantity) * item.itemPrice
-        }
-        return currentTotal
-    }
+    let grandTotal : Double
     
     var body: some View {
         HStack {
@@ -125,8 +126,10 @@ struct ConfirmOrder: View {
     @State var present : Bool = false
     
     @Binding var items : [CoffeeItem]
-    @Binding var addFlavor : Bool
-    @Binding var chosenFlavor : String
+    @Binding var addedTip : Bool
+    @Binding var option : Int
+    
+    let grandTotal : Double
     
     var body : some View {
         VStack {
@@ -140,7 +143,7 @@ struct ConfirmOrder: View {
             .foregroundColor(.white)
             .cornerRadius(10)
             .sheet(isPresented: $present) {
-                SecondView(present: $present, items: $items, addFlavor: $addFlavor, chosenFlavor: $chosenFlavor)
+                SecondView(present: $present, items: $items, addedTip: $addedTip, option: $option, grandTotal: grandTotal)
             }
                 
             }
@@ -155,21 +158,26 @@ struct SecondView: View {
     @Binding var present : Bool
     
     @Binding var items : [CoffeeItem]
-    @Binding var addFlavor : Bool
-    @Binding var chosenFlavor : String
+    @Binding var addedTip : Bool
+    @Binding var option : Int
+    
+    let grandTotal : Double
     
     var body : some View {
+        List {
             VStack {
                 Text("Your Order").bold()
                 
                 ForEach(items, id: \.itemName) {item in
                     if item.quantity > 0 {
-                        Text("Item: \(item.itemName)")
-                            .italic()
-                            .foregroundColor(.secondary)
-                        Text("Added Flavor: \(chosenFlavor)")
-                            .italic()
-                            .foregroundColor(.secondary)
+                        HStack {
+                            Text(item.itemName)
+                                .italic()
+                                .foregroundColor(.secondary)
+                            Text("(\(item.quantity))")
+                            Spacer()
+                            Text(item.itemPrice, format: .currency(code: "USD"))
+                        }
                     }
                 }
                 .padding()
@@ -177,10 +185,44 @@ struct SecondView: View {
                 .background(Color(.systemGray6))
                 .cornerRadius(10)
                 
-                Button("Return") {
-                    present.toggle()
+                HStack{
+                    Text("Added Tip: ")
+                        .italic()
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text("% \(option)")
                 }
-            }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                
+                HStack {
+                    Text("Total")
+                        .italic()
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(grandTotal, format: .currency(code: "USD"))
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemGray6))
+                .cornerRadius(10)
+                
+                VStack {
+                    Button("Return") {
+                        present.toggle()
+                    }
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                }
+            }.listStyle(GroupedListStyle())
+                
+        }
     }
 }
 
