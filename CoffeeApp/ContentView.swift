@@ -39,12 +39,10 @@ struct ContentView: View {
                     ListItem(item: $coffeeMenu[index])
                 }
                 AddTip(addedTip: $addedTip, option: $option)
-                
                 Section {
                     Total(grandTotal: grandTotal)
                     ConfirmOrder(items: $coffeeMenu, addedTip: $addedTip, option: $option, grandTotal: grandTotal)
                 }
-                
             }
             .listStyle(GroupedListStyle())
             .navigationTitle(Text("Barista!"))
@@ -145,12 +143,9 @@ struct ConfirmOrder: View {
             .sheet(isPresented: $present) {
                 SecondView(present: $present, items: $items, addedTip: $addedTip, option: $option, grandTotal: grandTotal)
             }
-                
-            }
-
-            }
-
         }
+    }
+}
 
 
 
@@ -227,7 +222,7 @@ struct SecondView: View {
 }
 
 
-// ----------------------------- PREVIEW OPTIONS -----------------------------
+// ----------------------------- PREVIEW OPTIONS 
 #Preview {
     ContentView()
         .preferredColorScheme(.light)
