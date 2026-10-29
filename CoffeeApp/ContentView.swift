@@ -202,7 +202,7 @@ struct SecondView: View {
                         .italic()
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text(grandTotal, format: .currency(code: "USD"))
+                    Text(grandTotal, format: .currency(code: "USD")).bold()
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
